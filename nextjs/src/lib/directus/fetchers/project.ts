@@ -1,5 +1,5 @@
 import { Project } from '@/types/directus-schema';
-import { getDirectus } from './directus';
+import { getDirectus } from '../directus';
 
 export const createProject = async () => {
 	const { createItem, directus } = getDirectus();

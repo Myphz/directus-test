@@ -12,23 +12,23 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Project } from '@/types/directus-schema';
-import { updateProject } from '@/lib/directus/fetchers/project';
+import { Card } from '@/types/directus-schema';
+import { updateCard } from '@/lib/directus/fetchers/card';
 
-type UpdateProjectModalProps = {
+type UpdateCardModalProps = {
 	onClose: () => void;
-	project: Project;
+	card: Card;
 };
 
-const READ_ONLY_KEYS = ['id', 'user_created', 'date_created', 'user_updated', 'date_updated', 'workflows'];
+const READ_ONLY_KEYS = ['id', 'user_created', 'date_created', 'user_updated', 'date_updated'];
 
-export function UpdateProjectModal({ onClose, project }: UpdateProjectModalProps) {
-	const [formData, setFormData] = useState(project);
+export function UpdateCardModal({ onClose, card }: UpdateCardModalProps) {
+	const [formData, setFormData] = useState(card);
 	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
-		setFormData(project);
-	}, [project]);
+		setFormData(card);
+	}, [card]);
 
 	const handleChange = (key: string, value: any) => {
 		setFormData((prev) => ({
@@ -41,7 +41,7 @@ export function UpdateProjectModal({ onClose, project }: UpdateProjectModalProps
 		setIsLoading(true);
 		try {
 			console.log(formData);
-			await updateProject(project.id, formData);
+			await updateCard(card.id, formData);
 			onClose();
 		} finally {
 			setIsLoading(false);
@@ -54,8 +54,8 @@ export function UpdateProjectModal({ onClose, project }: UpdateProjectModalProps
 		<Dialog open={true} onOpenChange={onClose}>
 			<DialogContent className="sm:max-w-[425px]">
 				<DialogHeader>
-					<DialogTitle>Update Project #{project.id}</DialogTitle>
-					<DialogDescription>Make changes to your project. Click save when you're done.</DialogDescription>
+					<DialogTitle>Update Card #{card.id}</DialogTitle>
+					<DialogDescription>Make changes to your card. Click save when you're done.</DialogDescription>
 				</DialogHeader>
 
 				<div className="grid gap-4 py-4">
