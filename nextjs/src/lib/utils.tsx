@@ -25,6 +25,7 @@ export const prettyPrintJson = (object: Record<string, unknown>) => (
 	<ol>
 		{Object.entries(object).map(([key, value]) => (
 			<li key={key}>
+				{/* @ts-ignore */}
 				{key}: {value || 'NULL'}
 			</li>
 		))}

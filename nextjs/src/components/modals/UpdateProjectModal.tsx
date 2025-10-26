@@ -1,0 +1,89 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Project } from '@/types/directus-schema';
+import { updateProject } from '@/lib/directus/fetchers';
+
+type UpdateProjectModalProps = {
+	onClose: () => void;
+	project: Project;
+};
+
+const READ_ONLY_KEYS = ['id', 'user_created', 'date_created', 'user_updated', 'date_updated', 'workflows'];
+
+export function UpdateProjectModal({ onClose, project }: UpdateProjectModalProps) {
+	const [formData, setFormData] = useState(project);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		setFormData(project);
+	}, [project]);
+
+	const handleChange = (key: string, value: any) => {
+		setFormData((prev) => ({
+			...prev,
+			[key]: value,
+		}));
+	};
+
+	const handleSubmit = async () => {
+		setIsLoading(true);
+		try {
+			console.log(formData);
+			await updateProject(project.id, formData);
+			onClose();
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const editableFields = Object.keys(formData).filter((key) => !READ_ONLY_KEYS.includes(key));
+
+	return (
+		<Dialog open={true} onOpenChange={onClose}>
+			<DialogContent className="sm:max-w-[425px]">
+				<DialogHeader>
+					<DialogTitle>Update Project #{project.id}</DialogTitle>
+					<DialogDescription>Make changes to your project. Click save when you're done.</DialogDescription>
+				</DialogHeader>
+
+				<div className="grid gap-4 py-4">
+					{editableFields.map((key) => (
+						<div className="grid grid-cols-4 items-center gap-4" key={key}>
+							<Label htmlFor={key} className="text-right capitalize">
+								{key.replace('_', ' ')}
+							</Label>
+							<Input
+								id={key}
+								value={(formData[key as keyof typeof formData] as string) || ''}
+								onChange={(e) => handleChange(key, e.target.value)}
+								className="col-span-3"
+								disabled={isLoading}
+							/>
+						</div>
+					))}
+				</div>
+
+				<DialogFooter>
+					<Button variant="outline" onClick={onClose} disabled={isLoading}>
+						Cancel
+					</Button>
+					<Button onClick={handleSubmit} disabled={isLoading}>
+						{isLoading ? 'Saving...' : 'Save changes'}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
+	);
+}

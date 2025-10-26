@@ -1,15 +1,27 @@
 'use client';
+import { UpdateProjectModal } from '@/components/modals/UpdateProjectModal';
 import { Button } from '@/components/ui/button';
 import { createProject, getProjects } from '@/lib/directus/fetchers';
 import { prettyPrintJson } from '@/lib/utils';
 import { useState } from 'react';
 
+type ProjectType = Awaited<ReturnType<typeof getProjects>>[number];
+
 export default function Page() {
-	const [projects, setProjects] = useState<Awaited<ReturnType<typeof getProjects>>>([]);
+	const [projects, setProjects] = useState<ProjectType[]>([]);
+	const [selectedProject, setSelectedProject] = useState<ProjectType | null>(null);
 
 	const loadProjects = async () => {
 		const data = await getProjects();
 		setProjects(data);
+	};
+
+	const handleOpenModal = (project: ProjectType) => {
+		setSelectedProject(project);
+	};
+
+	const handleCloseModal = () => {
+		setSelectedProject(null);
 	};
 
 	return (
@@ -22,11 +34,18 @@ export default function Page() {
 			<div className="flex flex-col gap-2">
 				{projects.map((project) => (
 					<div className="bg-gray-dark p-4 rounded-sm" key={project.id}>
-						<span className="text-bold font-bold">Project #{project.id}</span>
+						<div className="flex justify-between items-center mb-2">
+							<span className="text-bold font-bold">Project #{project.id}</span>
+							<Button variant="outline" size="sm" onClick={() => handleOpenModal(project)}>
+								Update
+							</Button>
+						</div>
 						{prettyPrintJson(project)}
 					</div>
 				))}
 			</div>
+
+			{selectedProject && <UpdateProjectModal onClose={handleCloseModal} project={selectedProject} />}
 		</div>
 	);
 }

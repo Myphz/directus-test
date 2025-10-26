@@ -9,6 +9,11 @@ import {
 	uploadFiles,
 	withToken,
 	staticToken,
+	updateItem,
+	deleteItem,
+	deleteItems,
+	updateItems,
+	createItems,
 } from '@directus/sdk';
 import type { RestClient } from '@directus/sdk';
 import Queue from 'p-queue';
@@ -38,16 +43,23 @@ const directus = createDirectus<Schema>(directusUrl, {
 		fetch: (...args) => queue.add(() => fetchRetry(0, ...args)),
 	},
 })
-	.with(staticToken('Ys4HhzDstOS8TpPwSbFLLCkw_ZoyOHSt'))
+	.with(staticToken('e9WtaJyH0g0Ly8TMjXR-IOyRALy6ombn'))
 	.with(rest());
 
 export const getDirectus = () => ({
 	directus: directus as RestClient<Schema>,
+
 	readItems,
 	readItem,
-	readSingleton,
-	readUser,
+
 	createItem,
+	createItems,
+
+	updateItem,
+	updateItems,
+
+	deleteItem,
+	deleteItems,
+
 	uploadFiles,
-	withToken,
 });
