@@ -20,3 +20,13 @@ export function debounce<T extends (...args: any[]) => void>(func: T, wait: numb
 		timeout = setTimeout(() => func(...args), wait);
 	};
 }
+
+export const prettyPrintJson = (object: Record<string, unknown>) => (
+	<ol>
+		{Object.entries(object).map(([key, value]) => (
+			<li key={key}>
+				{key}: {value || 'NULL'}
+			</li>
+		))}
+	</ol>
+);
