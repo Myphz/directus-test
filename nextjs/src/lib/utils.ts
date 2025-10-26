@@ -1,6 +1,5 @@
 import { ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { Metadata } from 'next';
 
 /**
  * Combines class names dynamically with Tailwind merge.
