@@ -10,7 +10,7 @@ export const createProject = async () => {
 export const getProjects = async () => {
 	const { readItems, directus } = getDirectus();
 
-	return await directus.request(readItems('project', { sort: '-id' }));
+	return await directus.request(readItems('project', { fields: ['*', { workflows: ['*'] }], sort: '-id' }));
 };
 
 export const updateProject = async (id: string | number, newProject: Partial<Project>) => {
